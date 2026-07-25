@@ -20,6 +20,24 @@ the top of the list when the newest one failed.
 **Do not** clear caches, redeploy, or change the branch before reading the deploy log. Redeploying an
 unfixed failure just fails again.
 
+## A deployment that failed in zero seconds
+
+**Always:** it was refused before it started, not broken while running. Depfloy checks the server
+before doing any work, and a refusal is recorded as a failed deployment with `duration_seconds: 0`.
+
+The one seen most often is memory:
+
+> Insufficient memory on server: 305 MB available, at least 512 MB required to deploy safely. Free up
+> memory or upgrade the server, then redeploy.
+
+**Confirm:** `get_deployment(deployment_id)` — `recent_output` holds the whole reason in one line and
+`output_truncated` is false. There is nothing further in `get_deployment_logs`; do not go looking.
+
+**What it means for the diagnosis:** the commit is not implicated. Redeploying the same commit once
+the server has room usually succeeds, and a later successful deployment of that same `commit` in
+`list_deployments` is the evidence. Do not start reading application code for a failure that never
+reached it.
+
 ## "The deploy says it completed but the site returns 502"
 
 **Usually:** the application process is not running, so nothing after the build is the problem.
