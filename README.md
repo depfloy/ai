@@ -1,37 +1,49 @@
-# Depfloy for Claude Code
+# Depfloy for AI agents
 
-Connects Claude Code to your Depfloy account and gives it the operational knowledge the individual
-API calls do not carry: the order things happen in, where to stop and ask, and which failures look
-like something other than what they are.
+Depfloy exposes an MCP server at `https://app.depfloy.com/mcp`. This repository holds what an agent
+needs on top of it: the connection config for each client, and the operational knowledge the
+individual API calls do not carry — the order things happen in, where to stop and ask, and which
+failures look like something other than what they are.
 
-## Install
+## Claude Code
 
 ```
-/plugin marketplace add depfloy/claude-plugin
+/plugin marketplace add depfloy/ai
 /plugin install depfloy
 ```
 
-Restart Claude Code, then run `/mcp` and authorize the `depfloy` server. Authorization opens
-Depfloy in your browser; the connection acts as your own user, with your own role, in one
-organization at a time.
+Restart Claude Code, then run `/mcp` and authorize the `depfloy` server. Authorization opens Depfloy
+in your browser; the connection acts as your own user, with your own role, in one organization at a
+time.
 
-## What it adds
+The plugin bundles both halves — the MCP connection and the skill — so there is no config file to
+paste.
 
-**The connection.** A `depfloy` MCP server pointed at `https://app.depfloy.com/mcp`, so no manual
-config file is needed. 32 tools covering servers, projects, deployments, environment files,
-application and deploy logs, scheduled and background jobs, backups, certificates and domains.
+## claude.ai and the Claude desktop app
 
-**The skill.** `skills/depfloy/SKILL.md` — four recipes and the rules that surround them:
+Settings → Connectors → Add custom connector → `https://app.depfloy.com/mcp`. The same OAuth flow,
+no plugin needed. Skills are not part of that surface, so the recipes below are Claude Code only.
+
+## Other agents
+
+Not shipped yet. Cursor, VS Code and Codex all speak MCP, but each wants a different config file in a
+different JSON shape, and at least one of them comes back on an OAuth callback URL that Depfloy does
+not currently allow. Tracked separately: the schemas are known, the work is verifying each against a
+real connection rather than publishing a config that fails on first use.
+
+## What the skill covers
+
+`plugins/depfloy/skills/depfloy/SKILL.md` — four recipes and the rules around them:
 
 - deploy a project and follow it to the end
 - work out why a deployment failed
 - roll a project back
 - change an environment variable
 
-`skills/depfloy/references/failure-patterns.md` catalogues failure shapes seen on real deployments,
-each with what identifies it and the call that confirms it. The first one is the one people lose the
-most time to: a failed deployment leaves the previous release serving, so the site staying up is not
-evidence the deployment worked.
+`references/failure-patterns.md` catalogues failure shapes seen on real deployments, each with what
+identifies it and the call that confirms it. The first one is where people lose the most time: a
+failed deployment leaves the previous release serving, so the site staying up is not evidence the
+deployment worked.
 
 ## What it will ask you before doing
 
@@ -42,14 +54,14 @@ whose environment has never been set — the skill states what it is about to do
 ## Permissions
 
 Every tool is refused unless your Depfloy role grants the permission it names. A Viewer can read
-deployments and cannot start one. If you connect with a personal access token instead of OAuth, the
-token's own ability list narrows it further: the permission has to be in both. Run `whoami` to see
-both lists.
+deployments and cannot start one. Connecting with a personal access token instead of OAuth narrows
+it further: the permission has to be in both the role and the token's ability list. Run `whoami` to
+see both.
 
 ## Self-hosted Depfloy
 
-The bundled MCP server points at `app.depfloy.com`. If you run Depfloy somewhere else, install the
-plugin for the skill and add your own server instead:
+The bundled connection points at `app.depfloy.com`. If you run Depfloy elsewhere, install the plugin
+for the skill and add your own server instead:
 
 ```
 claude mcp add --transport http depfloy https://your-depfloy-host/mcp
@@ -57,5 +69,5 @@ claude mcp add --transport http depfloy https://your-depfloy-host/mcp
 
 ## Reporting problems
 
-Issues that belong to the plugin — a recipe that misfires, a wrong tool name — go here. Issues with
-Depfloy itself go through the usual support channel.
+A recipe that misfires or a wrong tool name belongs here. Depfloy itself goes through the usual
+support channel.

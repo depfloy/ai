@@ -7,6 +7,6 @@
     "url": "https://depfloy.com"
   },
   "homepage": "https://depfloy.com/docs",
-  "repository": "https://github.com/depfloy/claude-plugin",
+  "repository": "https://github.com/depfloy/ai",
   "keywords": ["deployment", "servers", "devops", "depfloy"]
 }
