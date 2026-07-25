@@ -1,0 +1,13 @@
+{
+  "name": "depfloy",
+  "owner": {
+    "name": "Depfloy"
+  },
+  "plugins": [
+    {
+      "name": "depfloy",
+      "source": "./plugins/depfloy",
+      "description": "Connects Claude Code to Depfloy and teaches it how to deploy, diagnose a failed deployment, roll back, and change environment variables safely."
+    }
+  ]
+}
