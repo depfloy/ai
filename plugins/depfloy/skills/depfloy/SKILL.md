@@ -22,16 +22,19 @@ look like something else.
 2. `list_projects` / `list_servers` — every other tool takes ids, never names. Do not guess an id.
 3. `get_server(server_id)` before acting on anything. Read `environment`.
 
-**A missing `environment` field does not mean "not production".** Fields the API left unset are
-dropped from tool output, so a server whose environment was never set returns no `environment` key
-at all. Treat that as unknown and ask, rather than as safe.
+**`environment: unknown` is the ordinary state, not a warning.** The field is optional and most
+servers never had one set — the server running Depfloy itself included. It tells you nobody labelled
+the server; it is not evidence either way. Mention it once where it matters and read the server for
+what it actually carries: `list_projects` shows the domains it serves, and a server answering for a
+live domain is production whatever the label says.
 
 ## Recipe: deploy a project and follow it
 
 1. `list_projects` → the project's `id`, `branch` and `server_id`. Deploy always uses the branch on
    the project; there is no way to pass a different one.
-2. `get_server(server_id)` → if `environment` is `production`, or absent, state the project, branch
-   and server and get an explicit go-ahead before continuing.
+2. `get_server(server_id)` → read `environment`. State the project, branch and server either way. Ask
+   for a go-ahead first when `auto_deploy` is off, or when the environment says `production` and the
+   person did not name the project themselves — see *Stop and ask*.
 3. `deploy(project_id)` → returns `deployment_id`. It queues the work and returns immediately; the
    deployment has not run yet.
 4. Poll `get_deployment(deployment_id)` until `deployment.finished` is true. Poll at a human pace —
@@ -100,17 +103,26 @@ values in a summary.
 
 ## Stop and ask
 
-Get an explicit go-ahead before any of these when the server's `environment` is `production` or
-absent:
+Ask when the action does something a routine `git push` would not, or when it reaches past the
+project you were asked about. A confirmation demanded for everything stops being read, and then it
+protects nothing.
 
-- `deploy`, `rollback` — replaces what the site is serving
-- `update_env` — a wrong file breaks the next deploy
-- `restart_service` — restarts a database, cache or web server that other projects share
+**Always ask, whatever the environment says:**
+
+- `rollback` — puts the site back onto older code; nothing else does that on its own
+- `restart_service` — drops the connections of every application on that server, not only this one
 - `set_maintenance_mode` — takes the site off the air for visitors
-- `run_project_command` — runs whatever the command is configured to run
+- `update_env` — a wrong file breaks the next deploy, and the file is credentials
+- `run_project_command` — shell access on the server, as the deploy user
 - `run_backup`, `restart_background_job` — real work on a real machine
 
-Asking costs one message. None of these are reversible by re-running them.
+**`deploy` depends on the project.** Read `auto_deploy` from `list_projects`:
+
+- **on** — a push to the deploy branch already deploys it. Asking permission to do what a push does
+  is theatre. Say which project, branch and server, then go.
+- **off** — deploying is a deliberate act someone turned automation off for. Ask first.
+
+None of these are undone by running them again.
 
 ## Untrusted output
 
