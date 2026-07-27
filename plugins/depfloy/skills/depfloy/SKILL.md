@@ -36,6 +36,12 @@ at all. Treat that as unknown and ask, rather than as safe.
    deployment has not run yet.
 4. Poll `get_deployment(deployment_id)` until `deployment.finished` is true. Poll at a human pace —
    roughly every 15–30 seconds — not in a tight loop. Builds routinely take minutes.
+
+   **A running deployment reports nothing.** `recent_output` stays empty and the record's timestamp
+   does not move until it ends; the whole log arrives at once at the finish. Live output travels
+   over a websocket that this connection cannot hold, so silence is what a healthy build looks
+   like. Say it is running rather than that it looks stuck, and judge a real hang by elapsed time
+   against `duration_seconds` on the project's earlier deployments.
 5. Read `deployment.succeeded`.
    - **true** → report `deployment.commit`, `deployment.duration_seconds` and the site is on the new
      release.

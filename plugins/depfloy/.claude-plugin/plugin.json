@@ -1,7 +1,7 @@
 {
   "name": "depfloy",
   "description": "Operate Depfloy servers and applications from Claude Code: deploy a project and follow it to the end, work out why a deployment failed, roll back, and change environment variables. Bundles the Depfloy MCP connection.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Depfloy",
     "url": "https://depfloy.com"

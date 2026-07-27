@@ -85,8 +85,15 @@ already restarts as part of the deployment. Restarting the same service from ins
 Depfloy is holding the SSH session produces a connection that never returns, and the deployment sits
 until it times out.
 
-**Confirm:** `get_deployment(deployment_id)` — `recent_output` stops at the same line and does not
-advance between polls. Compare with `duration_seconds` on earlier deployments of the same project.
+**Confirm by elapsed time, not by output.** `get_deployment` reports nothing while a deployment is
+in flight: `recent_output` stays empty and the record's timestamp does not move until the run ends.
+That is normal and says nothing about whether it is progressing — the live output travels over a
+websocket that only the Console and the CLI's `deploy --follow` can hold, and the whole log is
+written to the record at the end.
+
+So compare elapsed wall-clock time against `duration_seconds` on the same project's earlier
+deployments in `list_deployments`. A run at three or four times its usual length is worth reporting
+as stuck; a silent one at half is simply running.
 
 **What helps:** removing the service restart from the custom script. Depfloy restarts the
 application's own processes after a successful deployment; a script that also does it is competing
