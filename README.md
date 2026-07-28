@@ -26,10 +26,17 @@ no plugin needed. Skills are not part of that surface, so the recipes below are 
 
 ## Other agents
 
-Not shipped yet. Cursor, VS Code and Codex all speak MCP, but each wants a different config file in a
-different JSON shape, and at least one of them comes back on an OAuth callback URL that Depfloy does
-not currently allow. Tracked separately: the schemas are known, the work is verifying each against a
-real connection rather than publishing a config that fails on first use.
+Connection files for Cursor and VS Code are in `clients/`, along with what has and has not been
+tried. Neither has been through a sign-in from that client against Depfloy yet — the config matches
+each one's documented format and the server accepts the callback each documents, which is not the
+same as knowing it works. `clients/README.md` says so plainly rather than burying it.
+
+Codex, Windsurf, Zed and Cline have no config here at all.
+
+Skills are a Claude Code idea, so the recipes below do not reach these clients. The two that matter
+most are served by the connection instead, as MCP prompts — `deploy_and_follow` and
+`diagnose_deployment` — and the rules an assistant must not get wrong travel in the server's own
+instructions, which every client receives regardless of what else it supports.
 
 ## What the skill covers
 

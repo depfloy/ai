@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "depfloy": {
+      "type": "http",
+      "url": "https://app.depfloy.com/mcp"
+    }
+  }
+}
