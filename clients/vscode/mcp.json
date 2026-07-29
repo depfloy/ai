@@ -2,7 +2,18 @@
   "servers": {
     "depfloy": {
       "type": "http",
-      "url": "https://app.depfloy.com/mcp"
+      "url": "https://app.depfloy.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${input:depfloy-token}"
+      }
     }
-  }
+  },
+  "inputs": [
+    {
+      "id": "depfloy-token",
+      "type": "promptString",
+      "description": "Depfloy API token — Settings → API Tokens",
+      "password": true
+    }
+  ]
 }
