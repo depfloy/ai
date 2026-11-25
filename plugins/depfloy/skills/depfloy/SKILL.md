@@ -2,7 +2,7 @@
 name: depfloy
 description: Operate servers and applications through a connected Depfloy MCP server — deploying a project and following it to the end, working out why a deployment failed, rolling back, and changing environment variables. Use whenever the user asks to deploy, redeploy, roll back, read deploy or application logs, edit env vars, or check the state of a Depfloy server or project.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Depfloy
@@ -106,6 +106,11 @@ values in a summary.
 Ask when the action does something a routine `git push` would not, or when it reaches past the
 project you were asked about. A confirmation demanded for everything stops being read, and then it
 protects nothing.
+
+The server's own instructions carry the full list of tools to confirm first — the terminal tools,
+`create_server`, `reboot_server` and `add_firewall_rule` among them. The ones below are those a
+deployment, a diagnosis or an env change runs into; a tool missing from this list is not one that
+needs no confirmation.
 
 **Always ask, whatever the environment says:**
 

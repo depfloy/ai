@@ -33,8 +33,9 @@ same as knowing it works. `clients/README.md` says so plainly rather than buryin
 
 Codex, Windsurf, Zed and Cline have no config here at all.
 
-Skills are a Claude Code idea, so the recipes below do not reach these clients. The two that matter
-most are served by the connection instead, as MCP prompts — `deploy_and_follow` and
+The server also publishes the skill itself through the MCP Skills extension
+(`skill://depfloy/SKILL.md`), for clients that support it; which ones do has not been checked yet.
+The two recipes that matter most are served as MCP prompts too — `deploy_and_follow` and
 `diagnose_deployment` — and the rules an assistant must not get wrong travel in the server's own
 instructions, which every client receives regardless of what else it supports.
 
@@ -51,6 +52,19 @@ instructions, which every client receives regardless of what else it supports.
 identifies it and the call that confirms it. The first one is where people lose the most time: a
 failed deployment leaves the previous release serving, so the site staying up is not evidence the
 deployment worked.
+
+## Editing the skill
+
+The skill's source is `resources/skills/depfloy/` in depfloy/depfloy, next to the tools it names;
+a test there fails when the skill mentions a tool that no longer exists. Change it there, then copy
+it into the plugin:
+
+```
+scripts/sync-skill.sh            # from depfloy/depfloy@master (needs gh)
+scripts/sync-skill.sh --check    # exit 1 if the plugin's copy differs
+```
+
+`--ref <branch>` reads another ref, `--from <dir>` a local depfloy-app checkout.
 
 ## What it will ask you before doing
 
